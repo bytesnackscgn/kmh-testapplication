@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  api:
+    container_name: ${API_CONTAINER_NAME}
+    build: dockerfile.api
+    depends_on:
+      # Our app does not work without our database
+      # so this ensures our database is loaded first
+      - postgres
+    ports:
+      - "${API_HOST}:${API_PORT}:3000"
+    volumes:
+      - ../dist:/data/app/
+    env: 
+  app:
+    container_name: "${APP_CONTAINER_NAME}"
+    build: dockerfile.app
+    depends_on:
+      # Our app does not work without our database
+      # so this ensures our database is loaded first
+      - postgres
+    ports:
+      - "${APP_HOST}:${APP_PORT}:8080"
+    volumes:
+      - ../dist:/data/app/
+  postgres:
+    container_name: "${PG_CONTAINER_NAME}"
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=root
+    ports:
+      - "${API_DB_PORT}:5432"
+    volumes:

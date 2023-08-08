@@ -1,0 +1,32 @@
+{
+  	"compilerOptions": {
+		"forceConsistentCasingInFileNames": true,
+		"target": "ESNext",
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"noEmit": false,
+    	"emitDecoratorMetadata": true,
+    	"experimentalDecorators": true,
+    	"esModuleInterop": true,
+    	"preserveConstEnums": true,
+		"allowImportingTsExtensions": false,
+		"paths": {
+			"types/*": ["./src/types/*"]
+		},
+		"rootDir": "../",
+		"baseUrl": "./",
+		"outDir": "dist/",
+		//"strict": true
+  	},
+  	"include": [
+    	"./*", "src/routes", "src/plugins", "src/index.ts", "src/app.ts"
+	],
+  	"exclude": [
+    	"node_modules",
+    	"./*.test.ts"
+  	],
+  	"parserOptions":  {
+   	"ecmaVersion":  2018,  // Allows for the parsing of modern ECMAScript features
+    	"sourceType":  "module"  // Allows for the use of imports
+  	}
+}
