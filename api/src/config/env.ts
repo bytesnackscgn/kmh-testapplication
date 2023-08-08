@@ -2,8 +2,6 @@ import type { ApiEnv, HexColorCode } from '../types';
 import dotenv from 'dotenv'; 
 import path from 'path';
 
-console.info('DOTENV',process.env.NODE_ENV);
-
 let envPath;
 if (process.env.NODE_ENV === 'production') {
 	envPath = '../../../.env.production';
@@ -49,7 +47,5 @@ export const env: ApiEnv = {
 	APP_PUBLIC_URL: process.env.APP_PUBLIC_URL,
 	APP_PRIMARY_COLOR: process.env?.APP_PRIMARY_COLOR as HexColorCode ?? '#00657e',
 };
-
-console.log('ENV',env);
 
 export function getEnv() : ApiEnv{ return env; }
