@@ -15,17 +15,18 @@ export type Role = {
 
 export type User = {
 	id?: string;
-	password?: string,
+	date_created?: string;
 	status?: 'active' | 'suspended' | 'invited';
 	first_name?: string;
 	last_name?: string;
 	email?: string;
+	password?: string;
 	role?: string;
 	provider?: ProviderName,
 	token?: string;
 	password_reset_token?: string | null;
-	permitted_views?: object,
-	permitted_actions?: object
+	permitted_views?: object | null;
+	permitted_actions?: object | null;
 };
 
 export interface Session {

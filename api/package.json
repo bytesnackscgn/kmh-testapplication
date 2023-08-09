@@ -11,6 +11,8 @@
     "build:staging": "NODE_ENV=staging tsc -p ./tsconfig.json",
     "dev": "NODE_ENV=development ts-node-dev --respawn --transpile-only --ignore-watch node_modules src/index.ts",
     "start": "node ./dist/api/src/index.js",
+	"db:migrate": "npx knex --knexfile ./src/database/knexfile.ts migrate:latest",
+    "db:seed": "npx knex --knexfile ./src/database/knexfile.ts seed:run",
     "test": "tap \"test/**/*.test.js\"",
     "lint": "eslint --ext .ts .",
     "lint:fix": "eslint --ext .ts . --fix"

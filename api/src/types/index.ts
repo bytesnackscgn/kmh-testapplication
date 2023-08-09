@@ -6,5 +6,6 @@ export * from './common';
 export * from './config';
 export * from './filter';
 export * from './models';
+export * from './post';
 export * from './query';
 export * from './schema';

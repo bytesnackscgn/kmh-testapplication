@@ -5,7 +5,7 @@ services:
     container_name: ${POSTGRES_CONTAINER_NAME}
     restart: always
     ports:
-      - "${POSTGRES_PORT}:5432"
+      - "127.0.0.1:${POSTGRES_PORT}:5432"
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}

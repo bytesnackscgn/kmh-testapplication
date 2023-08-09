@@ -16,7 +16,7 @@ export default {
 		database: env.API_DB_NAME,
 		user: env.API_DB_USER,
 		password: env.API_DB_PASSWORD,
-		ssl: env.API_DB_SSL ? { rejectUnauthorized: false } : false,
+		//ssl: env.API_DB_SSL ? true : false,
 	},
 	log: !env.API_DEBUG ? null : log,
 	pool: {
@@ -24,7 +24,10 @@ export default {
 		max: 10,
 	},
 	migrations: {
-		tableName: 'knex_migrations',
+		directory: '../database/migrations/',
+	},
+	seeds: {
+		directory: '../database/seeds/',
 	},
 	timezone: 'UTC'
 };
