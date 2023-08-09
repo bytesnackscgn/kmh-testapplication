@@ -2,7 +2,7 @@
 import type { Knex } from 'knex';
 import type { AbstractControllerOptions, TokenPayload, LoginResult, Session, User } from '../../../types';
 import jwt from 'jsonwebtoken';
-import { nanoid } from 'nanoid';
+//import { nanoid } from 'nanoid';
 import { clone, cloneDeep } from 'lodash';
 import { getAuthProvider } from './helper';
 import { env } from '../../../config/env';
@@ -81,7 +81,7 @@ export class AuthenticationService {
 			expiresIn: env.API_JWT_TTL,
 			issuer: env.API_JWT_ISSUER
 		});
-
+		const nanoid = await import('nanoid');
 		const refreshToken = nanoid(64);
 		const refreshTokenExpiration = new Date(Date.now() + secondsToMs(env.API_JWT_TTL));
 
@@ -172,7 +172,7 @@ export class AuthenticationService {
 			expiresIn: env.API_JWT_TTL,
 			issuer: env.API_JWT_ISSUER
 		});
-
+		const nanoid = await import('nanoid');
 		const newRefreshToken = nanoid(64);
 		const refreshTokenExpiration = new Date(Date.now() + secondsToMs(env.API_JWT_TTL));
 

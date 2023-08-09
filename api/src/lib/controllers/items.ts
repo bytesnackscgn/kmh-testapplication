@@ -98,6 +98,76 @@ export class ItemsController<Item extends AnyItem = AnyItem> implements Abstract
 
 			// Apply filter if provided
 			if (query.filter && typeof query.filter === 'object') {
+				const { _and, _or, ...filters } = query.filter;
+
+				// Apply regular filters
+				for (const key in filters) {
+					if (Object.prototype.hasOwnProperty.call(filters, key)) {
+						const value = filters[key];
+						if (typeof value === 'object' && !Array.isArray(value)) {
+							for (const operator in value) {
+								if (Object.prototype.hasOwnProperty.call(value, operator)) {
+									const filterFn = getFilter(key, operator, value[operator]);
+									if (filterFn) {
+										knexQuery = filterFn(knexQuery);
+									}
+								}
+							}
+						} else {
+							knexQuery = knexQuery.where(key, value);
+						}
+					}
+				}
+
+				// Apply logical operators '_and' and '_or'
+				if (_and && Array.isArray(_and) && _and.length > 0) {
+					for (const andFilter of _and) {
+						for (const key in andFilter) {
+							if (Object.prototype.hasOwnProperty.call(andFilter, key)) {
+								const value = andFilter[key];
+								if (typeof value === 'object' && !Array.isArray(value)) {
+									for (const operator in value) {
+										if (Object.prototype.hasOwnProperty.call(value, operator)) {
+											const filterFn = getFilter(key, operator, value[operator]);
+											if (filterFn) {
+												knexQuery = filterFn(knexQuery);
+											}
+										}
+									}
+								} else {
+									knexQuery = knexQuery.andWhere(key, value);
+								}
+							}
+						}
+					}
+				}
+
+				if (_or && Array.isArray(_or) && _or.length > 0) {
+					for (const orFilter of _or) {
+						for (const key in orFilter) {
+							if (Object.prototype.hasOwnProperty.call(orFilter, key)) {
+								const value = orFilter[key];
+								if (typeof value === 'object' && !Array.isArray(value)) {
+									for (const operator in value) {
+										if (Object.prototype.hasOwnProperty.call(value, operator)) {
+											const filterFn = getFilter(key, operator, value[operator]);
+											if (filterFn) {
+												knexQuery = filterFn(knexQuery);
+											}
+										}
+									}
+								} else {
+									knexQuery = knexQuery.orWhere(key, value);
+								}
+							}
+						}
+					}
+				}
+			}
+
+
+			// Apply filter if provided
+			/*if (query.filter && typeof query.filter === 'object') {
 				for (const key in query.filter) {
 					if (Object.prototype.hasOwnProperty.call(query.filter, key)) {
 						const value = query.filter[key];
@@ -139,7 +209,7 @@ export class ItemsController<Item extends AnyItem = AnyItem> implements Abstract
 						knexQuery = filterFn(knexQuery);
 					}
 				}
-			}
+			}*/
 
 			// Apply sorting if provided
 			if (query.sort && typeof query.sort === 'string') {
@@ -172,8 +242,12 @@ export class ItemsController<Item extends AnyItem = AnyItem> implements Abstract
 			}
 		};
 
-		const results = await this.readByQuery(query);
-
+		const results: Partial<Item>[] = await this.knex.transaction(async (trx) => {
+			const knexQuery = trx(this.collection);
+			knexQuery.select('*').where('id',id);
+			return await knexQuery;
+		});
+		
 		if (results.length === 1) {
 			return results[0];
 		}

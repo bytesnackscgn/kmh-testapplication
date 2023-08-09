@@ -44,8 +44,8 @@ module.exports = async function (fastify, opts) {
 			schema: fastify.schema,
 		});
 
-		const processedItem = await controller.readOne(req.params['id'], req.query);
-
+		const processedItem = await controller.readOne(req.params, req.query);
+		
 		res.send({
 			data: processedItem || null,
 		});

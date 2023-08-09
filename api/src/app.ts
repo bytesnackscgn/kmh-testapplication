@@ -14,6 +14,10 @@ const fastifyPlugin = (fastify, opts, next) => {
 		options: {},
 		//includeTypeScript: true,
 	});
+
+	fastify.register(autoLoad,{
+		dir: path.join(__dirname, 'routes')
+	});
 	
 	// Make sure to call next when done
 	next();
