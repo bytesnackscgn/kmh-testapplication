@@ -7,7 +7,7 @@ import { RolesController } from '../../lib/controllers/roles';
  */
 module.exports = async function (fastify, opts) {
 	/*
-	fastify.post('/ ', async function (req, res) {
+	fastify.post('/', async function (req, res) {
 		const isBodyArray = Array.isArray(req.body);
 
 		const controller = new RolesController({
@@ -31,7 +31,7 @@ module.exports = async function (fastify, opts) {
 	});
 	*/
 
-	fastify.get('/ ', async function (req, res) {
+	fastify.get('/', async function (req, res) {
 		const controller = new RolesController({
 			knex: fastify.knex,
 			schema: fastify.schema,
@@ -58,7 +58,7 @@ module.exports = async function (fastify, opts) {
 	});
 
 	/*
-	fastify.patch('/ ', async function (req, res){
+	fastify.patch('/', async function (req, res){
 		const isBodyArray = Array.isArray(req.body);
 
 		const controller = new RolesController({

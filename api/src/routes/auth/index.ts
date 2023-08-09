@@ -22,8 +22,8 @@ module.exports = async function (fastify, opts) {
 			throw new InvalidPayloadError( error.message );
 		}
 
-		const mode = req.body.mode || 'json';
-		const provider = req.body.provider || 'local';
+		const mode = req.body?.mode || 'json';
+		const provider = req.body?.provider || 'local';
 
 		const { accessToken, refreshToken, expires } = await authenticationService.login(provider, req.body);
 
@@ -87,9 +87,9 @@ module.exports = async function (fastify, opts) {
 			throw new InvalidPayloadError('"email" field is required');
 		}
 
-		const service = new UsersController({ schema: fastify.schema });
+		const controller = new UsersController({ schema: fastify.schema });
 
-		await service.requestPasswordReset(req.body.email, req.body.reset_url || null);
+		await controller.requestPasswordReset(req.body.email, req.body.reset_url || null);
 
 		res.send({
 			state: true

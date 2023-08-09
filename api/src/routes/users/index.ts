@@ -2,7 +2,7 @@ import { UsersController } from '../../lib/controllers/users';
 import type { Item } from '../../types';
 
 module.exports = async function (fastify, opts) {
-	fastify.post('/ ', async function (req, res) {
+	fastify.post('/', async function (req, res) {
 		const isBodyArray = Array.isArray(req.body);
 
 		const controller = new UsersController({
@@ -25,7 +25,7 @@ module.exports = async function (fastify, opts) {
 		});
 	});
 
-	fastify.get('/ ', async function (req, res) {
+	fastify.get('/', async function (req, res) {
 		const controller = new UsersController({
 			knex: fastify.knex,
 			schema: fastify.schema,
@@ -51,7 +51,7 @@ module.exports = async function (fastify, opts) {
 		});
 	});
 
-	fastify.patch('/ ', async function (req, res){
+	fastify.patch('/', async function (req, res){
 		const isBodyArray = Array.isArray(req.body);
 
 		const controller = new UsersController({

@@ -3,7 +3,7 @@ import type { Query, AbstractController, AbstractControllerOptions, Item as AnyI
 import type { SQLError } from '../errors/database/dialects/types';
 import { FilteringError, /*ForbiddenError,*/ NotFoundItemError } from '../errors/index';
 import { translateDatabaseError } from '../errors/database/translate';
-import { validateKeys } from '../utils/validate-keys';
+//import { validateKeys } from '../utils/validate-keys';
 //import { AuthController } from '../utils/auth/auth';
 import { PayloadUtil } from '../utils/payload';
 import { getFilter } from '../utils/filter';
@@ -26,18 +26,19 @@ export class ItemsController<Item extends AnyItem = AnyItem> implements Abstract
 	 * Create a single new item.
 	 */
 	async createOne(data: Partial<Item>): Promise<Partial<Item>> {
-		const payloadKeys: string[] = Object.keys(data);
-		validateKeys(this.schema[this.collection], payloadKeys);
+		//const payloadKeys: string[] = Object.keys(data);
+		//validateKeys(this.schema[this.collection], payloadKeys);
 
 		const newItem: object = await this.knex.transaction(async (trx) => {
 			// We're creating new services instances so they can use the transaction as their Knex interface
-			const payloadUtil = new PayloadUtil({
+			/*const payloadUtil = new PayloadUtil({
 				schema: this.schema[this.collection],
 				payload: data,
 			});
 
 			const payload = payloadUtil.getNormalizedPayload();
-
+			*/
+			const payload = data;
 			/*
 			const AuthController = new AuthController({
 				accountability: this.accountability,
@@ -265,17 +266,18 @@ export class ItemsController<Item extends AnyItem = AnyItem> implements Abstract
 	 * Update a single item by primary key
 	 */
 	async updateOne(data: Partial<Item>): Promise<Partial<Item>> {
-		const payloadKeys: string[] = Object.keys(data);
-		validateKeys(this.schema[this.collection], payloadKeys, true);
+		//const payloadKeys: string[] = Object.keys(data);
+		//validateKeys(this.schema[this.collection], payloadKeys, true);
 
 		const updatedItem: object = await this.knex.transaction(async (trx) => {
-			const payloadUtil = new PayloadUtil({
+			/*const payloadUtil = new PayloadUtil({
 				schema: this.schema[this.collection],
 				payload: data,
 			});
 
 			const payload = payloadUtil.getNormalizedPayload();
-
+			*/
+			const payload = data;
 			/*const AuthController = new AuthController({
 				accountability: this.accountability,
 				knex: trx,
@@ -288,7 +290,7 @@ export class ItemsController<Item extends AnyItem = AnyItem> implements Abstract
 			try {
 				const result = await trx(this.collection)
 					.update(payload)
-					.where(this.schema[this.collection].primary, payloadUtil.primaryKeyValue as string)
+					.where('id', payload.id/*payloadUtil.primaryKeyValue as string*/)
 					.returning('*')
 					.then((result) => result[0]);
 
