@@ -18,5 +18,9 @@ const roles: Role[] = [
 ];
 
 export async function seed(knex: Knex): Promise<void> {
-	await knex('roles').insert(roles);
+	try{	
+		await knex('roles').insert(roles);
+	}catch(e){
+		console.warn(e);
+	}
 }

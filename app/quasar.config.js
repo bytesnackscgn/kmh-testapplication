@@ -10,10 +10,12 @@
 
 
 const { configure } = require('quasar/wrappers');
+const environment = require('./environment.ts');
+const env = environment();
 
-
-module.exports = configure(function (/* ctx */) {
+module.exports = configure(function (ctx) {
   return {
+	supportTS: true,
     eslint: {
       // fix: true,
       // include: [],
@@ -30,8 +32,8 @@ module.exports = configure(function (/* ctx */) {
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
     boot: [
-      
-      
+		'cms',
+		'validator'
     ],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
@@ -59,8 +61,10 @@ module.exports = configure(function (/* ctx */) {
         browser: [ 'es2019', 'edge88', 'firefox78', 'chrome87', 'safari13.1' ],
         node: 'node16'
       },
-
-      vueRouterMode: 'hash', // available values: 'hash', 'history'
+	  env : { 
+        ...env,
+      },
+      vueRouterMode: ctx.dev ? 'hash' : 'history', // available values: 'hash', 'history'
       // vueRouterBase,
       // vueDevtools,
       // vueOptionsAPI: false,
@@ -69,7 +73,6 @@ module.exports = configure(function (/* ctx */) {
 
       // publicPath: '/',
       // analyze: true,
-      // env: {},
       // rawDefine: {}
       // ignorePublicFolder: true,
       // minify: false,
@@ -87,13 +90,23 @@ module.exports = configure(function (/* ctx */) {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#devServer
     devServer: {
-      // https: true
-      open: true // opens browser window automatically
+		https: false,
+		host: 'localhost',
+		port: 8080,
+		open: true
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#framework
     framework: {
-      config: {},
+      config: {
+		cssAddon: true,
+        notify : {},
+        loading : {
+          spinnerColor : 'green-12',
+          spinnerSize: 85,
+          backgroundColor: 'grey-1'
+        }
+	  },
 
       // iconSet: 'material-icons', // Quasar icon set
       // lang: 'en-US', // Quasar language pack
@@ -106,7 +119,10 @@ module.exports = configure(function (/* ctx */) {
       // directives: [],
 
       // Quasar plugins
-      plugins: []
+      plugins: [
+		'Notify',
+        'Loading',
+	  ]
     },
 
     // animations: 'all', // --- includes all animations
@@ -140,7 +156,7 @@ module.exports = configure(function (/* ctx */) {
 
       prodPort: 3000, // The default port that the production server should use
                       // (gets superseded if process.env.PORT is specified at runtime)
-
+	  maxAge: 1000 * 60 * 60 * 24 * 30,
       middlewares: [
         'render' // keep this as last one
       ]
@@ -151,7 +167,42 @@ module.exports = configure(function (/* ctx */) {
       workboxMode: 'generateSW', // or 'injectManifest'
       injectPwaMetaTags: true,
       swFilename: 'sw.js',
-      manifestFilename: 'manifest.json',
+      manifest: {
+        name: 'Produktverwaltung',
+        short_name: 'Produktverwaltung',
+        description: 'Produktverwaltung',
+        display: 'standalone',
+        orientation: 'portrait',
+        background_color: '#efefef',
+        theme_color: '##8abcc1',
+        icons: [
+          {
+            src: 'icons/icon-128x128.png',
+            sizes: '128x128',
+            type: 'image/png'
+          },
+          {
+            src: 'icons/icon-192x192.png',
+            sizes: '192x192',
+            type: 'image/png'
+          },
+          {
+            src: 'icons/icon-256x256.png',
+            sizes: '256x256',
+            type: 'image/png'
+          },
+          {
+            src: 'icons/icon-384x384.png',
+            sizes: '384x384',
+            type: 'image/png'
+          },
+          {
+            src: 'icons/icon-512x512.png',
+            sizes: '512x512',
+            type: 'image/png'
+          }
+        ]
+      },
       useCredentialsForManifestTag: false,
       // useFilenameHashes: true,
       // extendGenerateSWOptions (cfg) {}

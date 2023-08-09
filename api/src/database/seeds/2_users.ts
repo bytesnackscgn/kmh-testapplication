@@ -3,9 +3,14 @@ import type { User } from '../../types';
 import { v4 as uuidv4 } from 'uuid';
 import argon2 from 'argon2';
 
+const currentDate = new Date();
+const yesterday = new Date(currentDate);
+yesterday.setDate(yesterday.getDate() - 1);
+
 const users: User[] = [
 	{
 		id: uuidv4(),
+		date_created: yesterday.toISOString(),
 		status: 'active',
 		first_name: 'Georgij',
 		last_name: 'Michel',
@@ -14,7 +19,7 @@ const users: User[] = [
 		role: '',
 		provider: 'local',
 		permitted_views: {
-			dashboard: [
+			cms: [
 				'users',
 				'posts'
 			]
@@ -45,6 +50,7 @@ const users: User[] = [
 	},
 	{
 		id: uuidv4(),
+		date_created: yesterday.toISOString(),
 		status: 'active',
 		first_name: 'Editor',
 		last_name: 'KMH',
@@ -53,7 +59,7 @@ const users: User[] = [
 		role: '',
 		provider: 'local',
 		permitted_views: {
-			dashboard: [
+			cms: [
 				'users',
 				'posts'
 			]
@@ -66,10 +72,7 @@ const users: User[] = [
 				'delete'
 			],
 			'roles': [
-				'create',
 				'read',
-				'update',
-				'delete'
 			],
 			posts: [
 				'create',
@@ -84,6 +87,7 @@ const users: User[] = [
 	},
 	{
 		id: uuidv4(),
+		date_created: yesterday.toISOString(),
 		status: 'active',
 		first_name: 'Gast',
 		last_name: 'KMH',
@@ -92,7 +96,7 @@ const users: User[] = [
 		role: '',
 		provider: 'local',
 		permitted_views: {
-			dashboard: [
+			cms: [
 				'users',
 				'posts'
 			]
@@ -112,15 +116,16 @@ const users: User[] = [
 	},
 	{
 		id: uuidv4(),
+		date_created: yesterday.toISOString(),
 		status: 'suspended',
-		first_name: 'Gespeer',
+		first_name: 'Suspended Guest',
 		last_name: 'KMH',
-		email: 'guest@bytesnacks.de',
+		email: 'suspended@bytesnacks.de',
 		password: '',
 		role: '',
 		provider: 'local',
 		permitted_views: {
-			dashboard: [
+			cms: [
 				'users',
 				'posts'
 			]
@@ -148,26 +153,30 @@ const passwordList = [
 ];
 
 export async function seed(knex: Knex): Promise<void> {
-	const roles = await knex('roles').select('*');
+	try{
+		const roles = await knex('roles').select('*');
 
-	// Hash the passwords for users and assign roles based on index
-	const  processedUsers = await Promise.all(users.map(async (user, index) => {
+		// Hash the passwords for users and assign roles based on index
+		const  processedUsers = await Promise.all(users.map(async (user, index) => {
 		// Hash the password using argon2
-		const hashedPassword = await argon2.hash(passwordList[index]);
+			const hashedPassword = await argon2.hash(passwordList[index]);
 	
-		// Assign roles based on index
-		if (index === 0) {
-			user.role = roles.filter(el => el.name === 'admin')[0].id;
-		} else if (index === 1) {
-			user.role = roles.filter(el => el.name === 'editor')[0].id;
-		} else {
-			user.role = roles.filter(el => el.name === 'guest')[0].id;
-		}
+			// Assign roles based on index
+			if (index === 0) {
+				user.role = roles.filter(el => el.name === 'admin')[0].id;
+			} else if (index === 1) {
+				user.role = roles.filter(el => el.name === 'editor')[0].id;
+			} else {
+				user.role = roles.filter(el => el.name === 'guest')[0].id;
+			}
 	
-		// Assign the hashed password to the user
-		user.password = hashedPassword;
+			// Assign the hashed password to the user
+			user.password = hashedPassword;
 	
-		return user;
-	}));
-	await knex('users').insert(processedUsers);
+			return user;
+		}));
+		await knex('users').insert(processedUsers);
+	}catch(e){
+		console.warn(e);
+	}
 }
